@@ -1,0 +1,523 @@
+@import "tailwindcss";
+
+/* Theme variants follow the data-theme attribute (not the OS setting): `light:opacity-20`, `dark:…`. */
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *):not(:where([data-theme="dark"], [data-theme="dark"] *)));
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/*
+ * Zcan app theme — a crisp, instrument-panel UI: near-black panels, 1px hairlines,
+ * monospace everywhere, one hot accent. Swap --accent to re-skin the whole app.
+ */
+/*
+ * Theme tokens. Dark is the default (and what any `data-theme="dark"` subtree — e.g. the
+ * radar viewport, kept as a dark "instrument window" — resolves to). Light is applied by
+ * `data-theme="light"` on <html> (set before paint by the inline script in layout.tsx),
+ * and mirrored for system-light users before/without JS via the media query below.
+ */
+:root,
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #050505;
+  --bg-2: #0a0a0b;
+  --surface: #0e0e0f;
+  --surface-2: #141416;
+  --surface-3: #1c1c1f;
+  --border: #222225;
+  --border-strong: #35353a;
+  --text: #ececec;
+  --fg: #ffffff;
+  --muted: #9b9b9f;
+  --subtle: #636368;
+  --accent: #ff2d55;
+  --accent-hi: #ff4b6e;
+  --accent-ink: #ffffff;
+  --green: #4ade80;
+  --red: #ff6b6b;
+  --warn: #ffb020;
+  --info: #7dd3fc;
+  /* Effects */
+  --scrim: rgb(0 0 0 / 0.7);
+  --hatch: rgb(255 255 255 / 0.05);
+  --dots-bg: #070707;
+  --dots-dot: rgb(255 255 255 / 0.06);
+  --selection: rgb(255 45 85 / 0.45);
+  --selection-ink: #ffffff;
+  --glow: rgb(255 45 85 / 0.6);
+  --pop-shadow: 0 24px 60px rgb(0 0 0 / 0.55);
+  --modal-shadow: 0 30px 80px rgb(0 0 0 / 0.8);
+  --toast-shadow: 0 12px 40px -12px rgb(0 0 0 / 0.8);
+}
+
+/* Light: warm paper, white panels, crisp hairlines; crimson deepened to clear 4.5:1 on white. */
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f6f5f2;
+  --bg-2: #fbfaf8;
+  --surface: #ffffff;
+  --surface-2: #f7f6f3;
+  --surface-3: #efeee9;
+  --border: #e2e0da;
+  --border-strong: #c8c5bd;
+  --text: #17171a;
+  --fg: #0b0b0c;
+  --muted: #5c5c62;
+  --subtle: #6e6e74;
+  --accent: #c8103c;
+  --accent-hi: #a90d33;
+  --accent-ink: #ffffff;
+  --green: #13773a;
+  --red: #c42b1c;
+  --warn: #8f5400;
+  --info: #0b6a99;
+  --scrim: rgb(24 22 18 / 0.32);
+  --hatch: rgb(23 23 26 / 0.07);
+  --dots-bg: #f1f0ec;
+  --dots-dot: rgb(23 23 26 / 0.12);
+  --selection: rgb(200 16 60 / 0.18);
+  --selection-ink: #0b0b0c;
+  --glow: rgb(200 16 60 / 0.35);
+  --pop-shadow: 0 1px 2px rgb(24 22 18 / 0.06), 0 16px 40px -12px rgb(24 22 18 / 0.18);
+  --modal-shadow: 0 2px 6px rgb(24 22 18 / 0.08), 0 30px 80px -20px rgb(24 22 18 / 0.3);
+  --toast-shadow: 0 1px 2px rgb(24 22 18 / 0.06), 0 12px 32px -12px rgb(24 22 18 / 0.22);
+}
+
+/* System light before JS runs (or with JS off). Same palette as above. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --bg: #f6f5f2;
+    --bg-2: #fbfaf8;
+    --surface: #ffffff;
+    --surface-2: #f7f6f3;
+    --surface-3: #efeee9;
+    --border: #e2e0da;
+    --border-strong: #c8c5bd;
+    --text: #17171a;
+    --fg: #0b0b0c;
+    --muted: #5c5c62;
+    --subtle: #6e6e74;
+    --accent: #c8103c;
+    --accent-hi: #a90d33;
+    --accent-ink: #ffffff;
+    --green: #13773a;
+    --red: #c42b1c;
+    --warn: #8f5400;
+    --info: #0b6a99;
+    --scrim: rgb(24 22 18 / 0.32);
+    --hatch: rgb(23 23 26 / 0.07);
+    --dots-bg: #f1f0ec;
+    --dots-dot: rgb(23 23 26 / 0.12);
+    --selection: rgb(200 16 60 / 0.18);
+    --selection-ink: #0b0b0c;
+    --glow: rgb(200 16 60 / 0.35);
+    --pop-shadow: 0 1px 2px rgb(24 22 18 / 0.06), 0 16px 40px -12px rgb(24 22 18 / 0.18);
+    --modal-shadow: 0 2px 6px rgb(24 22 18 / 0.08), 0 30px 80px -20px rgb(24 22 18 / 0.3);
+    --toast-shadow: 0 1px 2px rgb(24 22 18 / 0.06), 0 12px 32px -12px rgb(24 22 18 / 0.22);
+  }
+}
+
+/* A themed subtree re-resolves inherited text colour against its own tokens (utilities still win). */
+@layer base {
+  [data-theme]:not(:root) {
+    color: var(--text);
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-2: var(--bg-2);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-line: var(--border);
+  --color-line-strong: var(--border-strong);
+  --color-text: var(--text);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-accent: var(--accent);
+  --color-accent-hi: var(--accent-hi);
+  --color-accent-ink: var(--accent-ink);
+  --color-green: var(--green);
+  --color-red: var(--red);
+  --color-warn: var(--warn);
+  --color-info: var(--info);
+  --color-scrim: var(--scrim);
+  --shadow-pop: var(--pop-shadow);
+  --shadow-modal: var(--modal-shadow);
+  --shadow-toast: var(--toast-shadow);
+  --font-sans: var(--font-plex-mono);
+  --font-mono: var(--font-plex-mono);
+  --font-num: var(--font-inter);
+  /* Crisp corners everywhere. */
+  --radius-sm: 2px;
+  --radius-md: 2px;
+  --radius-lg: 3px;
+  --radius-xl: 3px;
+  --radius-2xl: 4px;
+  --radius-3xl: 4px;
+}
+
+html {
+  background: var(--bg);
+  -webkit-tap-highlight-color: color-mix(in srgb, var(--accent) 15%, transparent);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 14px;
+  touch-action: manipulation;
+}
+
+::selection {
+  background: var(--selection);
+  color: var(--selection-ink);
+}
+
+:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+[id] {
+  scroll-margin-top: 80px;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Large light numerals ("14  6  3  +2"). */
+.num {
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+/* Section / panel titles: uppercase mono. */
+.label {
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.eyebrow {
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.micro {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--subtle);
+}
+
+/* Big page titles inside the app — still mono, just larger. */
+.display {
+  font-family: var(--font-plex-mono), monospace;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+/* Panels: flat, hairline, square. */
+.panel,
+.card-glow {
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+  padding: 12px 16px;
+}
+
+/* "+" registration marks on panel corners. */
+.marks {
+  position: relative;
+}
+.marks::before,
+.marks::after {
+  content: "+";
+  position: absolute;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--subtle);
+  pointer-events: none;
+}
+.marks::before {
+  left: 6px;
+  bottom: 6px;
+}
+.marks::after {
+  right: 6px;
+  top: 6px;
+}
+
+/* Diagonal hatch fill used for dividers and empty tracks. */
+.hatch {
+  background-image: repeating-linear-gradient(-45deg, transparent 0 4px, var(--hatch) 4px 5px);
+}
+
+/* Dotted canvas for viewports. */
+.dots {
+  background-color: var(--dots-bg);
+  background-image: radial-gradient(var(--dots-dot) 1px, transparent 1.2px);
+  background-size: 18px 18px;
+}
+
+/* Status tags: CRIT / WARN / INFO style. */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 6px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Primary action: flat accent block. */
+.btn-accent {
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.btn-accent:hover {
+  background: var(--accent-hi);
+}
+.glow-pill {
+  background: var(--accent);
+  color: var(--accent-ink);
+  box-shadow: 0 0 40px -6px var(--glow);
+}
+
+/* Long token lists render offscreen rows lazily. */
+.lazy-row {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 52px;
+}
+
+/* Hide scrollbars on horizontal strips but keep them scrollable. */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.animate-spin-slow {
+  animation: spin 1.2s linear infinite;
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+.pulse-dot {
+  animation: pulse-dot 1.6s ease-in-out infinite;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.fade-up {
+  animation: fade-up 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Tailwind v4 positions with the `translate` property, so animate `scale` alone. */
+@keyframes reticle {
+  0%,
+  100% {
+    scale: 1;
+  }
+  50% {
+    scale: 1.035;
+  }
+}
+
+/* Price tick flashes. */
+@keyframes tick-up {
+  0% {
+    color: var(--green);
+    text-shadow: 0 0 12px color-mix(in srgb, var(--green) 45%, transparent);
+  }
+  100% {
+    text-shadow: none;
+  }
+}
+@keyframes tick-down {
+  0% {
+    color: var(--accent);
+    text-shadow: 0 0 12px color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+  100% {
+    text-shadow: none;
+  }
+}
+.tick-up {
+  animation: tick-up 0.9s ease-out;
+}
+.tick-down {
+  animation: tick-down 0.9s ease-out;
+}
+
+@keyframes orb-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+.orb-float {
+  animation: orb-float 6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Agent reports (rendered Markdown). */
+.report {
+  color: var(--text);
+  font-family: var(--font-inter), sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+}
+.report > * + * {
+  margin-top: 0.9em;
+}
+.report h2 {
+  margin-top: 1.8em;
+  padding-bottom: 0.4em;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.report h2:first-child {
+  margin-top: 0;
+}
+.report h3 {
+  margin-top: 1.4em;
+  font-weight: 600;
+  color: var(--fg);
+}
+.report ul,
+.report ol {
+  padding-left: 1.3em;
+}
+.report ul {
+  list-style: square;
+}
+.report ol {
+  list-style: decimal;
+}
+.report li + li {
+  margin-top: 0.35em;
+}
+.report li::marker {
+  color: var(--accent);
+}
+.report a {
+  color: var(--fg);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent) 60%, transparent);
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+.report a:hover {
+  text-decoration-color: var(--accent);
+}
+.report strong {
+  color: var(--fg);
+}
+.report code {
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 0.88em;
+  background: var(--surface-3);
+  border-radius: 2px;
+  padding: 0.1em 0.4em;
+}
+.report table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 0.88em;
+}
+.report th,
+.report td {
+  border: 1px solid var(--border);
+  padding: 0.5em 0.7em;
+  text-align: left;
+  vertical-align: top;
+}
+.report th {
+  background: var(--surface-2);
+  color: var(--fg);
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.report blockquote {
+  border-left: 2px solid var(--accent);
+  padding-left: 1em;
+  color: var(--muted);
+}

@@ -1,0 +1,71 @@
+{
+  "extName": {
+    "message": "Zcan gizlilik koruması"
+  },
+  "extDesc": {
+    "message": "Kopyaladığın bağlantılardaki izlemeyi temizler, yapıştırılan kripto adresi kopyalanan değilse uyarır. Çevrimdışı çalışır."
+  },
+  "menuCopyClean": {
+    "message": "Temiz bağlantıyı kopyala"
+  },
+  "menuCopyPageClean": {
+    "message": "Bu sayfanın temiz bağlantısını kopyala"
+  },
+  "toastRemoved": {
+    "message": "Zcan · kopyalanan bağlantıdan silinen izleyici: $COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "guardTitle": {
+    "message": "Göndermeden önce bu adresi kontrol et"
+  },
+  "guardBody": {
+    "message": "Az önce yapıştırdığın kripto adresi bu tarayıcıda en son kopyaladığın adres değil. Başka bir yerden kopyalamadıysan panon kötü amaçlı yazılım tarafından değiştirilmiş olabilir."
+  },
+  "guardLookalike": {
+    "message": "Yapıştırılan adres kopyaladığın gibi başlayıp bitiyor ama ortası farklı. Panoyu ele geçiren kötü amaçlı yazılımlar tam olarak bunu yapar. Gönderme."
+  },
+  "guardCopied": {
+    "message": "Kopyaladığın"
+  },
+  "guardPasted": {
+    "message": "Yapıştırdığın"
+  },
+  "guardDismiss": {
+    "message": "Kapat"
+  },
+  "popupCopyPage": {
+    "message": "Bu sayfanın temiz bağlantısını kopyala"
+  },
+  "popupCopied": {
+    "message": "Kopyalandı — izleyici bulunmadı"
+  },
+  "popupNothing": {
+    "message": "Bu sayfada kopyalanacak bir şey yok"
+  },
+  "popupCleanOnCopy": {
+    "message": "Kopyalarken bağlantıları temizle"
+  },
+  "popupCleanOnCopyHint": {
+    "message": "utm_, fbclid, gclid ve diğer izleyicileri siler"
+  },
+  "popupGuard": {
+    "message": "Pano koruması"
+  },
+  "popupGuardHint": {
+    "message": "Yapıştırılan kripto adresi değiştirildiyse uyarır"
+  },
+  "popupToast": {
+    "message": "Bağlantı temizlenince not göster"
+  },
+  "popupPrivate": {
+    "message": "Her şey tarayıcında çalışır. Eklenti hiçbir ağ isteği yapmaz."
+  },
+  "popupOpenZcan": {
+    "message": "Daha fazla gizlilik aracı: zcan.dev"
+  }
+}

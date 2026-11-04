@@ -1,0 +1,5 @@
+Contact: mailto:info@zcan.dev
+Expires: 2027-10-30T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://www.zcan.dev/.well-known/security.txt
+Policy: https://www.zcan.dev/security

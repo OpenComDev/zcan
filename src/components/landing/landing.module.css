@@ -1,0 +1,67 @@
+/*
+ * Motion for the home-page landing sections. Transform/opacity only, and nothing moves unless the
+ * reader allows motion (SMIL parts in the SVGs use `motion-reduce:hidden` twins instead).
+ */
+
+@keyframes run-x {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  15%,
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes run-y {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  15%,
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Runners start hidden so a reduced-motion reader never sees a dot stranded mid-track. */
+.runX,
+.runY {
+  opacity: 0;
+}
+
+.spin,
+.spinBack {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .runX {
+    animation: run-x 2.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  }
+  .runY {
+    animation: run-y 2.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  }
+  .spin {
+    animation: spin 48s linear infinite;
+  }
+  .spinBack {
+    animation: spin 72s linear infinite reverse;
+  }
+}

@@ -1,0 +1,31 @@
+name: Bug report
+description: Something on Zcan doesn't work as expected
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Security issue?** Don't file it here. Email info@zcan.dev (see SECURITY.md).
+        **Never post private keys, seed phrases or full wallet addresses you want kept private.**
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: "1. Go to …\n2. Click …"
+  - type: input
+    id: where
+    attributes:
+      label: Page or feature
+      placeholder: "e.g. /send, swap BTC → ZEC, Exposure Scout"
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and device
+      placeholder: "e.g. Safari 19 on iPhone"

@@ -1,0 +1,20 @@
+# Dependabot: weekly version updates plus immediate security-fix pull requests.
+# Security PRs ignore the schedule and the open-PR limit; they open as soon as an advisory lands.
+version: 2
+updates:
+  - package-ecosystem: "npm" # also reads pnpm-lock.yaml
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    groups:
+      # Next.js and its ESLint config move together.
+      next:
+        patterns: ["next", "eslint-config-next", "@next/*"]
+      react:
+        patterns: ["react", "react-dom", "@types/react", "@types/react-dom"]
+      minor-and-patch:
+        update-types: ["minor", "patch"]
+    commit-message:
+      prefix: "deps"

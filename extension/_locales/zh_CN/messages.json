@@ -1,0 +1,71 @@
+{
+  "extName": {
+    "message": "Zcan 隐私守护"
+  },
+  "extDesc": {
+    "message": "清理你复制的链接中的追踪参数，并在粘贴的加密地址与复制的不一致时发出警告。离线运行，不发送任何数据。"
+  },
+  "menuCopyClean": {
+    "message": "复制干净链接"
+  },
+  "menuCopyPageClean": {
+    "message": "复制此页面的干净链接"
+  },
+  "toastRemoved": {
+    "message": "Zcan · 已从复制的链接中移除追踪参数：$COUNT$ 个",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "guardTitle": {
+    "message": "发送前请核对此地址"
+  },
+  "guardBody": {
+    "message": "你刚粘贴的加密地址不是你在此浏览器中最后复制的地址。如果你没有从别处复制它，你的剪贴板可能已被恶意软件篡改。"
+  },
+  "guardLookalike": {
+    "message": "粘贴的地址开头和结尾与你复制的相同，但中间不同。劫持剪贴板的恶意软件正是这样做的。请不要发送。"
+  },
+  "guardCopied": {
+    "message": "你复制的"
+  },
+  "guardPasted": {
+    "message": "你粘贴的"
+  },
+  "guardDismiss": {
+    "message": "关闭"
+  },
+  "popupCopyPage": {
+    "message": "复制此页面的干净链接"
+  },
+  "popupCopied": {
+    "message": "已复制——未发现追踪参数"
+  },
+  "popupNothing": {
+    "message": "此页面没有可复制的内容"
+  },
+  "popupCleanOnCopy": {
+    "message": "复制时清理链接"
+  },
+  "popupCleanOnCopyHint": {
+    "message": "移除 utm_、fbclid、gclid 等追踪参数"
+  },
+  "popupGuard": {
+    "message": "剪贴板防护"
+  },
+  "popupGuardHint": {
+    "message": "粘贴的加密地址被替换时发出警告"
+  },
+  "popupToast": {
+    "message": "清理链接时显示提示"
+  },
+  "popupPrivate": {
+    "message": "一切都在你的浏览器中运行。此扩展不发出任何网络请求。"
+  },
+  "popupOpenZcan": {
+    "message": "更多隐私工具：zcan.dev"
+  }
+}

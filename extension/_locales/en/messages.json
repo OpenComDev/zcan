@@ -1,0 +1,71 @@
+{
+  "extName": {
+    "message": "Zcan privacy guard"
+  },
+  "extDesc": {
+    "message": "Cleans tracking out of links you copy and warns when a pasted crypto address isn't the one you copied. Works offline; sends nothing."
+  },
+  "menuCopyClean": {
+    "message": "Copy clean link"
+  },
+  "menuCopyPageClean": {
+    "message": "Copy clean link to this page"
+  },
+  "toastRemoved": {
+    "message": "Zcan · trackers removed from the copied link: $COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "guardTitle": {
+    "message": "Check this address before you send"
+  },
+  "guardBody": {
+    "message": "The crypto address you just pasted isn’t the one you last copied in this browser. If you didn’t copy it from somewhere else, your clipboard may have been changed by malware."
+  },
+  "guardLookalike": {
+    "message": "The pasted address starts and ends like the one you copied, but the middle is different. Clipboard-hijacking malware does exactly this. Don’t send."
+  },
+  "guardCopied": {
+    "message": "You copied"
+  },
+  "guardPasted": {
+    "message": "You pasted"
+  },
+  "guardDismiss": {
+    "message": "Dismiss"
+  },
+  "popupCopyPage": {
+    "message": "Copy clean link to this page"
+  },
+  "popupCopied": {
+    "message": "Copied — no trackers found"
+  },
+  "popupNothing": {
+    "message": "Nothing to copy on this page"
+  },
+  "popupCleanOnCopy": {
+    "message": "Clean links when copying"
+  },
+  "popupCleanOnCopyHint": {
+    "message": "Strips utm_, fbclid, gclid and other trackers"
+  },
+  "popupGuard": {
+    "message": "Clipboard guard"
+  },
+  "popupGuardHint": {
+    "message": "Warns if a pasted crypto address was swapped"
+  },
+  "popupToast": {
+    "message": "Show a note when a link is cleaned"
+  },
+  "popupPrivate": {
+    "message": "Everything runs in your browser. The extension makes no network requests."
+  },
+  "popupOpenZcan": {
+    "message": "More privacy tools at zcan.dev"
+  }
+}

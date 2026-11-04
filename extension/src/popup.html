@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header><strong>[ZCAN]</strong> <span data-i18n="extName"></span></header>
+    <main>
+      <button id="copy-page" class="primary" type="button" data-i18n="popupCopyPage"></button>
+      <p id="copy-status" class="status" role="status" aria-live="polite"></p>
+      <label class="switch"><input type="checkbox" id="cleanOnCopy" /><span><b data-i18n="popupCleanOnCopy"></b><small data-i18n="popupCleanOnCopyHint"></small></span></label>
+      <label class="switch"><input type="checkbox" id="guard" /><span><b data-i18n="popupGuard"></b><small data-i18n="popupGuardHint"></small></span></label>
+      <label class="switch"><input type="checkbox" id="toast" /><span><b data-i18n="popupToast"></b></span></label>
+      <p class="private" data-i18n="popupPrivate"></p>
+      <a href="https://www.zcan.dev/tools" target="_blank" rel="noopener noreferrer" data-i18n="popupOpenZcan"></a>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>

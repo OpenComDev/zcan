@@ -1,0 +1,71 @@
+{
+  "extName": {
+    "message": "Zcan guarda de privacidade"
+  },
+  "extDesc": {
+    "message": "Limpa rastreadores dos links que você copia e avisa se um endereço cripto colado não é o copiado. Funciona offline; nada é enviado."
+  },
+  "menuCopyClean": {
+    "message": "Copiar link limpo"
+  },
+  "menuCopyPageClean": {
+    "message": "Copiar link limpo desta página"
+  },
+  "toastRemoved": {
+    "message": "Zcan · rastreadores removidos do link copiado: $COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "guardTitle": {
+    "message": "Confira este endereço antes de enviar"
+  },
+  "guardBody": {
+    "message": "O endereço cripto que você acabou de colar não é o último que você copiou neste navegador. Se você não o copiou de outro lugar, um malware pode ter trocado sua área de transferência."
+  },
+  "guardLookalike": {
+    "message": "O endereço colado começa e termina como o que você copiou, mas o meio é diferente. É exatamente o que faz o malware que sequestra a área de transferência. Não envie."
+  },
+  "guardCopied": {
+    "message": "Você copiou"
+  },
+  "guardPasted": {
+    "message": "Você colou"
+  },
+  "guardDismiss": {
+    "message": "Fechar"
+  },
+  "popupCopyPage": {
+    "message": "Copiar link limpo desta página"
+  },
+  "popupCopied": {
+    "message": "Copiado — nenhum rastreador encontrado"
+  },
+  "popupNothing": {
+    "message": "Nada para copiar nesta página"
+  },
+  "popupCleanOnCopy": {
+    "message": "Limpar links ao copiar"
+  },
+  "popupCleanOnCopyHint": {
+    "message": "Remove utm_, fbclid, gclid e outros rastreadores"
+  },
+  "popupGuard": {
+    "message": "Guarda da área de transferência"
+  },
+  "popupGuardHint": {
+    "message": "Avisa se um endereço cripto colado foi trocado"
+  },
+  "popupToast": {
+    "message": "Mostrar um aviso ao limpar um link"
+  },
+  "popupPrivate": {
+    "message": "Tudo roda no seu navegador. A extensão não faz requisições de rede."
+  },
+  "popupOpenZcan": {
+    "message": "Mais ferramentas de privacidade em zcan.dev"
+  }
+}
