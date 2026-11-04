@@ -136,6 +136,7 @@ export const shell = {
     "action.refer": "Refer a friend",
     "actionHint.refer": "Friends pay less, you earn on-chain",
     "crumb.refer": "Refer a friend",
+    "source": "Source code",
   },
   es: {
     "action.recurring": "Compras recurrentes",
@@ -271,6 +272,7 @@ export const shell = {
     "action.refer": "Invita a un amigo",
     "actionHint.refer": "Tus amigos pagan menos y tú ganas en la cadena",
     "crumb.refer": "Invita a un amigo",
+    "source": "Código fuente",
   },
   pt: {
     "action.recurring": "Compras recorrentes",
@@ -406,6 +408,7 @@ export const shell = {
     "action.refer": "Indique um amigo",
     "actionHint.refer": "Seus amigos pagam menos e você ganha on-chain",
     "crumb.refer": "Indique um amigo",
+    "source": "Código-fonte",
   },
   tr: {
     "action.recurring": "Düzenli alımlar",
@@ -541,6 +544,7 @@ export const shell = {
     "action.refer": "Arkadaşını davet et",
     "actionHint.refer": "Arkadaşların daha az öder, sen zincir üzerinde kazanırsın",
     "crumb.refer": "Arkadaşını davet et",
+    "source": "Kaynak kodu",
   },
   ru: {
     "action.recurring": "Регулярные покупки",
@@ -676,6 +680,7 @@ export const shell = {
     "action.refer": "Пригласить друга",
     "actionHint.refer": "Друзья платят меньше, вы зарабатываете в блокчейне",
     "crumb.refer": "Пригласить друга",
+    "source": "Исходный код",
   },
   zh: {
     "action.recurring": "定期买入",
@@ -810,5 +815,6 @@ export const shell = {
     "action.refer": "推荐朋友",
     "actionHint.refer": "朋友少付费用，你在链上赚取收益",
     "crumb.refer": "推荐朋友",
+    "source": "源代码",
   },
 } satisfies Messages;

@@ -13,7 +13,9 @@ import {
   readInput,
   readPlan,
   runPrompt,
+  stripSignatures,
   systemPrompt,
+  verifyPlan,
 } from "@/lib/agents-server";
 import { buildDraft } from "@/lib/training";
 import { webSearch, webSearchEnabled } from "@/lib/web-search";
@@ -53,6 +55,10 @@ export async function POST(req: Request) {
   if ("error" in input) return Response.json({ code: input.code, message: input.error, field: input.field }, { status: 400 });
   const plan = readPlan(body?.plan);
   if (!plan) return Response.json({ code: "noSteps", message: "Approve at least one step to run the agent." }, { status: 400 });
+  // Only plans Zcan's plan route wrote can run as signed (ZS-10). Edited plans are refused; unsigned
+  // ones (re-checks saved before signing existed) still run but are never offered as training data.
+  const signature = verifyPlan(input, plan);
+  if (signature === "invalid") return Response.json({ code: "planChanged", message: "This plan was changed after it was made. Ask the agent for a new plan." }, { status: 400 });
 
   const canSearch = input.agent.usesWeb && webSearchEnabled() && plan.steps.some((s) => s.kind === "search");
   const encoder = new TextEncoder();
@@ -176,7 +182,7 @@ export async function POST(req: Request) {
         // is tailored to it (their phone, email provider, region…), which no scrubber can reliably
         // undo. The anonymizer only knows the agent's form fields, so the only safe rule is: a
         // profile run is never offered for training at all.
-        if (complete && !input.profile && isTrainable(input.agent, input.values)) {
+        if (complete && signature === "signed" && !input.profile && isTrainable(input.agent, input.values)) {
           const planSearch = input.agent.usesWeb && webSearchEnabled();
           const offer = buildDraft({
             agent: input.agent,
@@ -186,7 +192,7 @@ export async function POST(req: Request) {
               { role: "system", content: systemPrompt(input.agent, input.locale) },
               { role: "user", content: planPrompt(input, planSearch) },
             ],
-            planJson: JSON.stringify(plan),
+            planJson: JSON.stringify(stripSignatures(plan)),
             runMessages: messages,
             report,
             tools: canSearch ? [SEARCH_TOOL] : [],

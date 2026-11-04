@@ -1,6 +1,7 @@
 import "server-only";
+import { createHash, createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import OpenAI from "openai";
-import { fieldMax, getAgent, readLocale, type AgentDef, type AgentLocale, type AgentPlan } from "./agents";
+import { fieldMax, getAgent, readLocale, type AgentDef, type AgentLocale, type AgentPlan, type PlanStep } from "./agents";
 import { findSecret } from "./secret-guard";
 import { PROFILE_FIELDS, sanitizeProfile, type AgentProfile } from "./agent-profile";
 import { AI_SELF_HOSTED } from "./ai-model";
@@ -463,9 +464,81 @@ export function readPlan(raw: unknown): AgentPlan | null {
   const steps = p.steps
     .filter((s) => s && typeof s.title === "string" && typeof s.detail === "string" && ["search", "analyze", "write"].includes(s.kind))
     .slice(0, 8)
-    .map((s, i) => ({ id: String(s.id || i + 1).slice(0, 40), title: s.title.slice(0, 120), detail: s.detail.slice(0, 400), kind: s.kind }));
+    .map((s, i) => ({
+      id: String(s.id || i + 1).slice(0, 40),
+      title: s.title.slice(0, 120),
+      detail: s.detail.slice(0, 400),
+      kind: s.kind,
+      ...(typeof s.sig === "string" && s.sig ? { sig: s.sig.slice(0, 100) } : {}),
+    }));
   if (!steps.length) return null;
-  return { summary: p.summary.slice(0, 400), steps, caveat: typeof p.caveat === "string" ? p.caveat.slice(0, 400) : null };
+  return {
+    summary: p.summary.slice(0, 400),
+    steps,
+    caveat: typeof p.caveat === "string" ? p.caveat.slice(0, 400) : null,
+    ...(typeof p.sig === "string" && p.sig ? { sig: p.sig.slice(0, 120) } : {}),
+  };
+}
+
+// ---------- plan signatures ----------
+//
+// The run route only runs plans the plan route produced (security review ZS-10). The plan route signs
+// the plan's summary and each step separately, all tied to one random plan id, the agent and the inputs.
+// Signing steps one by one lets the reader skip steps (and saved re-checks keep the steps they approved)
+// while every step that runs is still one Zcan's model wrote.
+
+const PLAN_KEY = (() => {
+  const secret = env("TRAINING_SIGNING_SECRET", "AI_API_KEY", "DEEPSEEK_API_KEY");
+  return secret ? createHash("sha256").update(`zcan-plan-signature:${secret}`).digest() : null;
+})();
+
+const mac = (parts: string[]) => createHmac("sha256", PLAN_KEY!).update(JSON.stringify(parts)).digest("base64url");
+
+/** What a plan is bound to: the agent and the reader's inputs (not the saved profile, which changes). */
+function planContext(input: Pick<AgentInput, "agent" | "values">): string {
+  const values = Object.keys(input.values).sort().map((k) => [k, input.values[k]]);
+  return createHash("sha256").update(JSON.stringify([input.agent.id, values])).digest("base64url");
+}
+
+const stepParts = (ctx: string, nonce: string, s: PlanStep) => [ctx, nonce, "step", s.id, s.title, s.detail, s.kind];
+const headParts = (ctx: string, nonce: string, p: AgentPlan) => [ctx, nonce, "plan", p.summary, p.caveat ?? ""];
+
+/** The plan without any signatures: what the model actually wrote. */
+export function stripSignatures(plan: AgentPlan): AgentPlan {
+  return { summary: plan.summary, caveat: plan.caveat, steps: plan.steps.map((s) => ({ id: s.id, title: s.title, detail: s.detail, kind: s.kind })) };
+}
+
+/** Signs a plan the model just produced. Unchanged when no server secret is configured. */
+export function signPlan(input: AgentInput, plan: AgentPlan): AgentPlan {
+  if (!PLAN_KEY) return plan;
+  const ctx = planContext(input);
+  const nonce = randomBytes(12).toString("base64url");
+  return {
+    ...plan,
+    sig: `${nonce}.${mac(headParts(ctx, nonce, plan))}`,
+    steps: plan.steps.map((s) => ({ ...s, sig: mac(stepParts(ctx, nonce, s)) })),
+  };
+}
+
+const same = (a: string | undefined, b: string) => {
+  if (!a) return false;
+  const x = Buffer.from(a);
+  const y = Buffer.from(b);
+  return x.length === y.length && timingSafeEqual(x, y);
+};
+
+/**
+ * "signed": every step (and the summary) came from one plan Zcan signed for this agent and these inputs.
+ * "unsigned": no signatures at all (plans saved before signing existed). "invalid": signatures that don't match.
+ */
+export function verifyPlan(input: AgentInput, plan: AgentPlan): "signed" | "unsigned" | "invalid" {
+  if (!PLAN_KEY) return "unsigned";
+  if (!plan.sig && plan.steps.every((s) => !s.sig)) return "unsigned";
+  const [nonce, head] = (plan.sig ?? "").split(".");
+  if (!nonce || !head) return "invalid";
+  const ctx = planContext(input);
+  if (!same(head, mac(headParts(ctx, nonce, plan)))) return "invalid";
+  return plan.steps.every((s) => same(s.sig, mac(stepParts(ctx, nonce, s)))) ? "signed" : "invalid";
 }
 
 // ---------- rate limiting ----------

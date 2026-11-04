@@ -42,7 +42,7 @@
 <br>
 
 <p align="center">
-  <img src=".github/assets/swap.jpg" alt="Zcan swap screen: BTC to ZEC with a live quote" width="100%">
+  <a href="https://www.zcan.dev"><img src=".github/assets/demo.gif" alt="Demo: a live BTC to ZEC quote, the privacy agents, and the link cleaner removing trackers" width="100%"></a>
 </p>
 
 ## Why Zcan
@@ -227,6 +227,7 @@ GitHub Actions runs all of these on every push and pull request.
 - [x] Nine privacy agents on a self-hosted model
 - [x] Backup swap route
 - [x] Browser extension
+- [x] Signed agent plans (security review ZS-10)
 - [ ] Shielded (`u1…`) payouts on more routes
 - [ ] Self-hosted web search for the agents (SearXNG), so searches stay in-house too
 - [ ] Fine-tuned Zcan model trained on opt-in, anonymized agent runs
@@ -235,6 +236,9 @@ GitHub Actions runs all of these on every push and pull request.
 Ideas welcome in [issues](https://github.com/OpenComDev/zcan/issues).
 
 ## Contributing
+
+New here? Start with an issue labelled [good first issue](https://github.com/OpenComDev/zcan/labels/good%20first%20issue). See [CHANGELOG.md](CHANGELOG.md) for what's changed.
+
 
 Pull requests are welcome: bug fixes, translations, new privacy tools. Read [CONTRIBUTING.md](CONTRIBUTING.md)
 first. Found a vulnerability? Please report it privately; see [SECURITY.md](SECURITY.md).

@@ -7,6 +7,7 @@ import { AI_HOST, AI_MODEL_NAME, AI_RECIPIENT_POLICY, AI_SELF_HOSTED } from "@/l
 import { analyticsProvider } from "@/lib/analytics-events";
 import { T } from "@/lib/i18n";
 import { pageMeta } from "@/lib/page-meta";
+import { SOURCE_URL } from "@/lib/source";
 
 export function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
   return pageMeta(params, "/transparency", "transparency");
@@ -148,6 +149,13 @@ export default function TransparencyPage() {
           </p>
           <p className="mt-3 border-l-2 border-accent pl-3 text-[13px] leading-relaxed text-text">
             <T k="trust.tr.hosting" />
+          </p>
+          <p className="mt-3 text-[13px] leading-relaxed text-muted text-pretty">
+            <T k="trust.tr.source" />{" "}
+            <a href={SOURCE_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-fg underline decoration-line underline-offset-4 hover:decoration-accent">
+              <T k="trust.tr.sourceLink" />
+              <ArrowUpRight aria-hidden className="size-3.5" />
+            </a>
           </p>
         </header>
       </Panel>

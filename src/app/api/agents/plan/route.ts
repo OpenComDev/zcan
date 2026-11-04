@@ -10,6 +10,8 @@ import {
   rateLimited,
   readInput,
   readPlan,
+  signPlan,
+  stripSignatures,
   systemPrompt,
 } from "@/lib/agents-server";
 import { webSearchEnabled } from "@/lib/web-search";
@@ -47,7 +49,9 @@ export async function POST(req: Request) {
     }
     let plan = null;
     try {
-      plan = readPlan(JSON.parse(choice?.message.content || "null"));
+      // The model's own output never carries signatures: anything it wrote in `sig` is dropped.
+      const raw = readPlan(JSON.parse(choice?.message.content || "null"));
+      plan = raw && signPlan(input, stripSignatures(raw));
     } catch {
       // Malformed JSON — handled below.
     }

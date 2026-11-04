@@ -37,7 +37,7 @@ Vercel, the Upstash store, the LLM and search providers, and users' wallets.
 | ZS-07 | Payment-request note could carry bidi or control characters | Low | Payment requests | Fixed | `cleanLabel` strips them |
 | ZS-08 | Admin token comparison leaked the token's length | Low | Training API | Fixed | Compare SHA-256 digests with `timingSafeEqual` |
 | ZS-09 | Search-result URLs weren't validated | Low | Agents | Fixed | Only well-formed `http(s)` URLs up to 2,048 characters are kept |
-| ZS-10 | The run route trusts a client-supplied plan | Low | Agents / Training | Open | Sign plans in the plan route and verify them in the run route |
+| ZS-10 | The run route trusts a client-supplied plan | Low | Agents / Training | Fixed | Plans are signed in the plan route and verified in the run route (2026-11-04) |
 | ZS-11 | No security headers | Info | Platform | Fixed | Headers added for every route (see Hardening) |
 | ZS-12 | 1Click error messages are passed through to clients | Info | Swap API | Accepted | — |
 | ZS-13 | Payment-request links carry whatever payout address the sender chose | Info | Payment requests | Accepted | — (by design; the page already warns) |
@@ -165,7 +165,7 @@ blocks `javascript:` URLs, but a malformed URL would make `new URL(s.url).hostna
 sources list renders, which breaks the report view. **Fix:** `web-search.ts` keeps only well-formed
 `http:`/`https:` URLs up to 2,048 characters and caps titles at 200 characters.
 
-### ZS-10: Client-supplied plan in the run route (Low, open)
+### ZS-10: Client-supplied plan in the run route (Low, fixed)
 
 `/api/agents/run` accepts the "approved plan" from the browser and only checks its shape (8 steps,
 length caps). It is not bound to a plan the server actually produced. This has two consequences:
@@ -180,6 +180,14 @@ length caps). It is not bound to a plan the server actually produced. This has t
 `/plan`, return the signature, and in `/run` accept skipped steps only as a subset of a signed plan.
 Alternatively, mark drafts whose plan wasn't signed as not trainable. The prepare script's checks and
 human review are the current mitigation.
+
+**Fixed (2026-11-04).** `/plan` now signs the plan's summary and each step with HMAC-SHA256, tied to a
+random plan id, the agent and a hash of the reader's inputs (`signPlan` in `src/lib/agents-server.ts`).
+Signing each step separately lets readers skip steps, and saved re-checks keep working, while every step
+that runs is one Zcan's model wrote. `/run` refuses plans whose signatures don't match (edited or added
+steps, steps mixed from two plans, or a plan reused with other inputs). Plans with no signatures at all
+(re-checks saved before this change) still run, but are never offered as training data, so every training
+draft now comes from a server-written plan. Tests: `tests/unit/plan-signature.test.ts`.
 
 ### ZS-11: Security headers (Info, fixed)
 
@@ -346,7 +354,7 @@ Notes on these headers:
 2. **Move rate limits to a shared store.** Use the existing Upstash store for the agent, training and
    order limits, add a global daily budget for LLM and search usage, and set provider-side spend caps
    (ZS-03, ZS-04).
-3. **Fix ZS-02 and ZS-10 in the agent code:** drop images from rendered reports, mark search results as
+3. **Fix ZS-02 and ZS-10 in the agent code** (ZS-10 fixed 2026-11-04): drop images from rendered reports, mark search results as
    untrusted in the system prompt, and sign plans.
 4. **Add a Content-Security-Policy later.** Start with `Content-Security-Policy-Report-Only` and a
    reporting endpoint, build the allowlist from real traffic (wallet flows included), move the inline

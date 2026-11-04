@@ -383,8 +383,9 @@ export function agentText(t: (key: string) => string, id: string, path: string, 
   return out === key ? fallback : out;
 }
 
-export type PlanStep = { id: string; title: string; detail: string; kind: "search" | "analyze" | "write" };
-export type AgentPlan = { summary: string; steps: PlanStep[]; caveat: string | null };
+/** `sig` is the server's signature (see signPlan in agents-server): it proves Zcan's model wrote the step. */
+export type PlanStep = { id: string; title: string; detail: string; kind: "search" | "analyze" | "write"; sig?: string };
+export type AgentPlan = { summary: string; steps: PlanStep[]; caveat: string | null; sig?: string };
 
 /** Events streamed from /api/agents/run as newline-delimited JSON. */
 export type RunEvent =

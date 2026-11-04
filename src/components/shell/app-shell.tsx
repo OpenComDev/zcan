@@ -18,6 +18,7 @@ import { ScheduleWatcher } from "../agents/schedule-watcher";
 import { AlertWatcher } from "../alerts/alert-watcher";
 import { OnboardingTour } from "../onboarding/tour";
 import { RecurringWatcher } from "../recurring/recurring-watcher";
+import { SOURCE_URL } from "@/lib/source";
 import { EmptyState, emptySecondary } from "../onboarding/empty-state";
 import { InstallButton } from "../pwa/install-button";
 import { AlertFeed, FeedList } from "./alert-feed";
@@ -84,6 +85,9 @@ export function AppShell({ children }: { children: ReactNode }) {
               <Link href="/refer" className="hover:text-fg">
                 {t("shell.crumb.refer")}
               </Link>
+              <a href={SOURCE_URL} target="_blank" rel="noreferrer" className="hover:text-fg">
+                {t("shell.source")}
+              </a>
               <a href="mailto:info@zcan.dev" className="hover:text-fg">
                 info@zcan.dev
               </a>
