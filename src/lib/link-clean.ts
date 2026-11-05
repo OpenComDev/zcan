@@ -55,6 +55,8 @@ const KEEP_ON_HOST: Record<string, string[]> = {
 };
 
 const REDIRECT_PARAMS: { host: RegExp; path?: RegExp; param: string[] }[] = [
+  { host: /(^|\.)safelinks\.protection\.outlook\.com$/, path: /^\/$/, param: ["url"] },
+  { host: /^slack-redir\.net$/, path: /^\/link$/, param: ["url"] },
   { host: /(^|\.)google\.[a-z.]+$/, path: /^\/url$/, param: ["q", "url"] },
   { host: /^l\.(facebook|instagram)\.com$/, param: ["u"] },
   { host: /^lm\.facebook\.com$/, param: ["u"] },
