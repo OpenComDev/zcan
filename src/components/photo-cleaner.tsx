@@ -6,7 +6,7 @@ import { ShareResultButton } from "@/components/share/share-result-button";
 import { track as trackEvent } from "@/lib/analytics";
 import { feedback } from "@/lib/feedback";
 import { useT } from "@/lib/i18n";
-import { cleanPhoto, inspectPhoto, type Inspection, type MetaItem } from "@/lib/photo-meta";
+import { cleanPhoto, inspectPhoto, photoOutputFormat, type Inspection, type MetaItem } from "@/lib/photo-meta";
 import { useCanShare } from "@/lib/use-can-share";
 import { LocalProof, useLocalProof } from "./trust/local-proof";
 
@@ -24,7 +24,7 @@ const mb = new Intl.NumberFormat(undefined, { style: "unit", unit: "megabyte", m
 const kb = new Intl.NumberFormat(undefined, { style: "unit", unit: "kilobyte", maximumFractionDigits: 0 });
 const formatSize = (bytes: number) => (bytes >= 1_048_576 ? mb.format(bytes / 1_048_576) : kb.format(Math.max(1, bytes / 1024)));
 
-/** Share a cleaner photo: show what a photo leaks, then make a JPEG copy without EXIF, GPS, XMP or IPTC. */
+/** Show what a photo leaks, then make a clean copy without EXIF, GPS, XMP or IPTC. */
 export function PhotoCleaner() {
   const [state, setState] = useState<State>({ kind: "empty" });
   const [dragging, setDragging] = useState(false);
@@ -87,7 +87,10 @@ export function PhotoCleaner() {
     if (inputRef.current) inputRef.current.value = "";
   };
 
-  const outName = (name: string) => `${name.replace(/\.[^.]+$/, "") || "photo"}-clean.jpg`;
+  const output = state.kind === "clean" ? photoOutputFormat(state.outMeta.format) : null;
+  const outputName = state.kind === "clean" && output
+    ? `${state.file.name.replace(/\.[^.]+$/, "") || "photo"}-clean.${output.extension}`
+    : "";
 
   return (
     <section className="panel" aria-label={t("shell.tool.photo-cleaner")}>
@@ -190,16 +193,16 @@ export function PhotoCleaner() {
               <div className="mt-3 flex flex-wrap gap-2">
                 <a
                   href={state.outUrl}
-                  download={outName(state.file.name)}
+                  download={outputName}
                   className="inline-flex h-10 items-center gap-2 bg-fg px-4 text-sm font-semibold text-bg hover:bg-fg/90"
                 >
-                  <Download size={15} aria-hidden /> {t("tools.photo.save")}
+                  <Download size={15} aria-hidden /> {t("tools.photo.save", { format: output?.label ?? "JPEG" })}
                 </a>
                 {canShare && (
                   <button
                     type="button"
                     onClick={() => {
-                      const f = new File([state.out], outName(state.file.name), { type: "image/jpeg" });
+                      const f = new File([state.out], outputName, { type: state.out.type });
                       navigator.share({ files: [f] }).catch(() => {});
                     }}
                     className="inline-flex h-10 items-center gap-2 border border-line-strong px-4 text-sm font-medium text-fg hover:border-fg/40"

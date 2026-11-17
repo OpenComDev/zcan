@@ -90,7 +90,7 @@ export default function PrivacyPolicyPage() {
             image to its servers.
           </p>
           <p>
-            The tool creates a JPEG copy without copying the original image’s metadata, including source EXIF, GPS, and IPTC metadata. Your original
+            The tool creates a copy without copying the original image’s metadata, including source EXIF, GPS, and IPTC metadata. Your original
             photo remains unchanged.
           </p>
           <p>

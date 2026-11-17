@@ -133,13 +133,31 @@ function xmpItem(view: DataView, off: number, size: number): MetaItem {
 
 // ---------- containers ----------
 
+const PHOTO_OUTPUTS = {
+  jpeg: { mime: "image/jpeg", extension: "jpg", label: "JPEG" },
+  png: { mime: "image/png", extension: "png", label: "PNG" },
+  webp: { mime: "image/webp", extension: "webp", label: "WebP" },
+} as const;
+
+export function photoOutputFormat(format: Inspection["format"]) {
+  return PHOTO_OUTPUTS[format === "other" ? "jpeg" : format];
+}
+
+function photoFormat(view: DataView): Inspection["format"] {
+  if (view.byteLength > 3 && view.getUint16(0) === 0xffd8) return "jpeg";
+  if (view.byteLength > 8 && view.getUint32(0) === 0x89504e47) return "png";
+  if (view.byteLength > 12 && startsWith(view, 0, "RIFF") && startsWith(view, 8, "WEBP")) return "webp";
+  return "other";
+}
+
 export async function inspectPhoto(file: Blob): Promise<Inspection> {
   const buf = await file.arrayBuffer();
   const view = new DataView(buf);
   const items: MetaItem[] = [];
   let gps: Inspection["gps"];
+  const format = photoFormat(view);
 
-  if (view.byteLength > 3 && view.getUint16(0) === 0xffd8) {
+  if (format === "jpeg") {
     let off = 2;
     while (off + 4 <= view.byteLength) {
       if (view.getUint8(off) !== 0xff) break;
@@ -158,7 +176,7 @@ export async function inspectPhoto(file: Blob): Promise<Inspection> {
     return { format: "jpeg", items, gps };
   }
 
-  if (view.byteLength > 8 && view.getUint32(0) === 0x89504e47) {
+  if (format === "png") {
     let off = 8;
     while (off + 8 <= view.byteLength) {
       const len = view.getUint32(off);
@@ -178,7 +196,7 @@ export async function inspectPhoto(file: Blob): Promise<Inspection> {
     return { format: "png", items, gps };
   }
 
-  if (view.byteLength > 12 && startsWith(view, 0, "RIFF") && startsWith(view, 8, "WEBP")) {
+  if (format === "webp") {
     let off = 12;
     while (off + 8 <= view.byteLength) {
       const id = String.fromCharCode(...new Uint8Array(buf, off, 4));
@@ -195,18 +213,25 @@ export async function inspectPhoto(file: Blob): Promise<Inspection> {
 
 /** Re-encode through a canvas. Pixels only: EXIF, GPS, XMP and IPTC are all dropped. */
 export async function cleanPhoto(file: Blob, quality = 0.92): Promise<Blob> {
+  const header = new DataView(await file.slice(0, 13).arrayBuffer());
+  const { mime } = photoOutputFormat(photoFormat(header));
   // Browsers apply EXIF orientation here, so the clean copy stays upright.
   const bitmap = await createImageBitmap(file);
   const canvas = document.createElement("canvas");
   canvas.width = bitmap.width;
   canvas.height = bitmap.height;
   const ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error("Your browser can't process images.");
-  ctx.fillStyle = "#fff"; // JPEG has no alpha
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(bitmap, 0, 0);
-  bitmap.close();
-  const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", quality));
+  try {
+    if (!ctx) throw new Error("Your browser can't process images.");
+    if (mime === "image/jpeg") {
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+    ctx.drawImage(bitmap, 0, 0);
+  } finally {
+    bitmap.close();
+  }
+  const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, mime, quality));
   if (!blob) throw new Error("Couldn't create the clean copy.");
   return blob;
 }

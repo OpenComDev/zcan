@@ -64,7 +64,7 @@ export default function SupportPage() {
             <li>Open Tools.</li>
             <li>Tap Choose a photo.</li>
             <li>Select an image using Apple’s photo picker.</li>
-            <li>Share or save the processed JPEG copy.</li>
+            <li>Share or save the processed copy. The save button shows its format.</li>
           </ol>
           <p>Processing happens on your iPhone. Your original photo remains unchanged.</p>
           <p>The new copy does not carry the original image’s metadata, but visible faces, signs, documents, and landmarks remain in the picture.</p>
@@ -110,7 +110,7 @@ export default function SupportPage() {
           <p>The link may not contain a tracking parameter supported by the cleaner. An unchanged link does not mean the destination is private or safe.</p>
 
           <h3>Does photo cleaning change the original?</h3>
-          <p>No. Zcan creates a separate JPEG copy.</p>
+          <p>No. Zcan creates a separate copy.</p>
           <p>
             Conversion may reduce quality and does not preserve Live Photo motion, animation, or HDR. The tool does not blur or remove anything
             visible in the image.
